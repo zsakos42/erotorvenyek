@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erőtörvények a fizikában</title>
+    
+    <!-- Tailwind CSS a gyors és modern formázáshoz -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax a fizikai képletek szép megjelenítéséhez -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Egyedi betűtípus */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Tailwind slate-900 */
+            color: #f8fafc; /* Tailwind slate-50 */
+            overflow: hidden; /* Nincs görgetősáv, teljes képernyős élmény */
+        }
+
+        /* Dia áttűnések */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-out;
+            pointer-events: none;
+            z-index: 0;
+            transform: scale(0.95);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+            transform: scale(1);
+        }
+
+        /* Canvas reszponzivitás */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            background: #1e293b; /* slate-800 */
+            border: 1px solid #334155; /* slate-700 */
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Navigációs sáv */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(to top, #0f172a 60%, transparent);
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn:hover:not(:disabled) {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.6);
+        }
+
+        .btn:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.5;
+        }
+
+        /* Címlap extra stílus */
+        .glow-text {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+        }
+    </style>
+</head>
+<body class="h-screen w-screen relative">
+
+    <!-- DIA 1: Címlap -->
+    <div id="slide-0" class="slide active justify-center items-center text-center p-8 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-black">
+        <h1 class="text-6xl md:text-8xl font-extrabold mb-6 text-blue-400 glow-text tracking-tight">Erőtörvények</h1>
+        <h2 class="text-2xl md:text-4xl font-light text-slate-300 mb-12">A mechanika és elektrodinamika alapjai</h2>
+        <div class="flex flex-col items-center">
+            <p class="text-slate-400 max-w-2xl mb-8">Interaktív bemutató HTML5 Canvas animációkkal</p>
+            <button onclick="nextSlide()" class="btn text-xl px-8 py-4 bg-blue-500 animate-pulse">Prezentáció indítása</button>
+        </div>
+    </div>
+
+    <!-- DIA 2: Gravitáció -->
+    <div id="slide-1" class="slide p-6 md:p-12">
+        <div class="max-w-7xl mx-auto w-full h-full flex flex-col md:flex-row gap-8 pb-16">
+            <!-- Bal oldal: Tartalom -->
+            <div class="w-full md:w-1/2 flex flex-col justify-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-blue-400 mb-6">Gravitációs erőtörvény</h2>
+                <div class="bg-slate-800/50 p-6 rounded-2xl mb-6 border border-slate-700">
+                    <p class="text-2xl text-center font-bold mb-2">
+                        $$ F_g = G \frac{m_1 m_2}{r^2} $$
+                    </p>
+                </div>
+                <p class="text-lg text-slate-300 leading-relaxed mb-4">
+                    Isaac Newton törvénye kimondja, hogy a világegyetemben minden pontszerű test vonzza egymást. Ez az erő egyenesen arányos a két test tömegének szorzatával ($m_1, m_2$), és fordítottan arányos a köztük lévő távolság ($r$) négyzetével.
+                </p>
+                <ul class="list-disc list-inside text-slate-400 space-y-2">
+                    <li><strong class="text-white">G:</strong> Gravitációs állandó ($6.67 \times 10^{-11} \frac{Nm^2}{kg^2}$)</li>
+                    <li>Az erő mindig <strong>vonzó</strong> jellegű.</li>
+                    <li>Ez az erő tartja pályán a bolygókat és a holdakat.</li>
+                </ul>
+                
+                <!-- Interaktív vezérlők -->
+                <div class="mt-6 bg-slate-800/80 p-4 rounded-xl border border-slate-600 space-y-3">
+                    <h3 class="text-white font-semibold mb-2 flex justify-between">Interaktív paraméterek <span>🛠️</span></h3>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">Központi tömeg (m₁): <span id="val-g-m1">15</span></label>
+                        <input type="range" id="slider-g-m1" min="5" max="30" value="15" class="w-full accent-blue-500" oninput="document.getElementById('val-g-m1').innerText = this.value">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">Keringő tömeg (m₂): <span id="val-g-m2">5</span></label>
+                        <input type="range" id="slider-g-m2" min="2" max="15" value="5" class="w-full accent-blue-500" oninput="document.getElementById('val-g-m2').innerText = this.value">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">Távolság (r): <span id="val-g-r">120</span></label>
+                        <input type="range" id="slider-g-r" min="70" max="200" value="120" class="w-full accent-blue-500" oninput="document.getElementById('val-g-r').innerText = this.value">
+                    </div>
+                </div>
+            </div>
+            <!-- Jobb oldal: Animáció -->
+            <div class="w-full md:w-1/2 h-64 md:h-auto canvas-container">
+                <canvas id="canvas-gravity"></canvas>
+                <div class="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded text-sm text-slate-300">Zöld vektorok: Gravitációs vonzóerő</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIA 3: Rugalmas erő (Hooke) -->
+    <div id="slide-2" class="slide p-6 md:p-12">
+        <div class="max-w-7xl mx-auto w-full h-full flex flex-col md:flex-row gap-8 pb-16">
+            <div class="w-full md:w-1/2 flex flex-col justify-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-emerald-400 mb-6">Rugalmas erő (Hooke-tv.)</h2>
+                <div class="bg-slate-800/50 p-6 rounded-2xl mb-6 border border-slate-700">
+                    <p class="text-2xl text-center font-bold mb-2">
+                        $$ F_r = -D \cdot \Delta x $$
+                    </p>
+                </div>
+                <p class="text-lg text-slate-300 leading-relaxed mb-4">
+                    A rugalmas testek (pl. rugók) alakváltozásakor (megnyúlás, összenyomódás) ébredő erő. A Hooke-törvény szerint ez az erő egyenesen arányos a kitéréssel ($\Delta x$), és iránya azzal mindig ellentétes.
+                </p>
+                <ul class="list-disc list-inside text-slate-400 space-y-2">
+                    <li><strong class="text-white">D:</strong> Rugóállandó ($N/m$), a rugó merevségét jelzi.</li>
+                    <li>A negatív előjel mutatja, hogy az erő <strong>visszatérítő</strong> erő (mindig az egyensúlyi helyzet felé mutat).</li>
+                </ul>
+
+                <!-- Interaktív vezérlők -->
+                <div class="mt-6 bg-slate-800/80 p-4 rounded-xl border border-slate-600 space-y-3">
+                    <h3 class="text-white font-semibold mb-2 flex justify-between">Interaktív paraméterek <span>🛠️</span></h3>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">Rugóállandó (D): <span id="val-s-D">20</span> N/m</label>
+                        <input type="range" id="slider-s-D" min="5" max="50" value="20" class="w-full accent-emerald-500" oninput="document.getElementById('val-s-D').innerText = this.value">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">Kitérés (Δx): <span id="val-s-dx">0</span></label>
+                        <input type="range" id="slider-s-dx" min="-120" max="120" value="0" class="w-full accent-emerald-500" oninput="document.getElementById('val-s-dx').innerText = this.value">
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 h-64 md:h-auto canvas-container">
+                <canvas id="canvas-spring"></canvas>
+                <div class="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded text-sm text-slate-300">Piros vektor: Visszatérítő erő (F)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIA 4: Súrlódási erő -->
+    <div id="slide-3" class="slide p-6 md:p-12">
+        <div class="max-w-7xl mx-auto w-full h-full flex flex-col md:flex-row gap-8 pb-16">
+            <div class="w-full md:w-1/2 flex flex-col justify-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-orange-400 mb-6">Súrlódási erő</h2>
+                <div class="bg-slate-800/50 p-6 rounded-2xl mb-6 border border-slate-700">
+                    <p class="text-2xl text-center font-bold mb-2">
+                        $$ F_s = \mu \cdot F_{ny} $$
+                    </p>
+                </div>
+                <p class="text-lg text-slate-300 leading-relaxed mb-4">
+                    Egymáson érintkező felületek között fellépő erő, amely a felületek egymáshoz viszonyított elmozdulását akadályozza (csúszási súrlódás).
+                </p>
+                <ul class="list-disc list-inside text-slate-400 space-y-2">
+                    <li><strong class="text-white">$\mu$:</strong> Súrlódási együttható (függ a felületek anyagától).</li>
+                    <li><strong class="text-white">$F_{ny}$:</strong> Nyomóerő (a felületeket egymáshoz szorító erő).</li>
+                    <li>Iránya mindig ellentétes a mozgás (vagy a megindulás) irányával, ez okozza a testek lelassulását.</li>
+                </ul>
+                
+                <!-- Interaktív vezérlők -->
+                <div class="mt-6 bg-slate-800/80 p-4 rounded-xl border border-slate-600 space-y-3">
+                    <h3 class="text-white font-semibold mb-2 flex justify-between">Interaktív paraméterek <span>🛠️</span></h3>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">Súrlódási együttható (μ): <span id="val-f-mu">0.3</span></label>
+                        <input type="range" id="slider-f-mu" min="0.0" max="1.0" step="0.1" value="0.3" class="w-full accent-orange-500" oninput="document.getElementById('val-f-mu').innerText = this.value">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">Nyomóerő (F_ny): <span id="val-f-Fny">50</span> N</label>
+                        <input type="range" id="slider-f-Fny" min="10" max="100" value="50" class="w-full accent-orange-500" oninput="document.getElementById('val-f-Fny').innerText = this.value">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">Húzóerő (F_húzó): <span id="val-f-Fh">10</span> N</label>
+                        <input type="range" id="slider-f-Fh" min="0" max="100" value="10" class="w-full accent-orange-500" oninput="document.getElementById('val-f-Fh').innerText = this.value">
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 h-64 md:h-auto canvas-container bg-slate-200">
+                <!-- Itt sötétebb háttér kell, a canvas JS-ben felül lesz írva -->
+                <canvas id="canvas-friction"></canvas>
+                <div class="absolute top-4 left-4 bg-black/70 px-3 py-1 rounded text-sm text-slate-300">
+                    <span class="text-blue-400 font-bold">Kék:</span> Sebesség (v) | <span class="text-red-400 font-bold">Piros:</span> Súrlódási erő (F_s)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIA 5: Coulomb-erő -->
+    <div id="slide-4" class="slide p-6 md:p-12">
+        <div class="max-w-7xl mx-auto w-full h-full flex flex-col md:flex-row gap-8 pb-16">
+            <div class="w-full md:w-1/2 flex flex-col justify-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-purple-400 mb-6">Coulomb-erő</h2>
+                <div class="bg-slate-800/50 p-6 rounded-2xl mb-6 border border-slate-700">
+                    <p class="text-2xl text-center font-bold mb-2">
+                        $$ F_C = k \frac{q_1 q_2}{r^2} $$
+                    </p>
+                </div>
+                <p class="text-lg text-slate-300 leading-relaxed mb-4">
+                    Két nyugalomban lévő, pontszerű elektromos töltés között ható erő. Nagyon hasonlít a gravitációs törvényre, de itt létezik vonzás és taszítás is.
+                </p>
+                <ul class="list-disc list-inside text-slate-400 space-y-2">
+                    <li><strong class="text-white">k:</strong> Coulomb-állandó ($9 \times 10^9 \frac{Nm^2}{C^2}$).</li>
+                    <li><strong class="text-white">$q_1, q_2$:</strong> Elektromos töltések nagysága.</li>
+                    <li><strong>Azonos</strong> előjelű töltések taszítják, <strong>ellentétesek</strong> vonzzák egymást.</li>
+                </ul>
+
+                <!-- Interaktív vezérlők -->
+                <div class="mt-6 bg-slate-800/80 p-4 rounded-xl border border-slate-600 space-y-3">
+                    <h3 class="text-white font-semibold mb-2 flex justify-between">Interaktív paraméterek <span>🛠️</span></h3>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">1. Töltés (q₁): <span id="val-c-q1">5</span></label>
+                        <input type="range" id="slider-c-q1" min="-10" max="10" value="5" class="w-full accent-purple-500" oninput="document.getElementById('val-c-q1').innerText = this.value">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">2. Töltés (q₂): <span id="val-c-q2">-5</span></label>
+                        <input type="range" id="slider-c-q2" min="-10" max="10" value="-5" class="w-full accent-purple-500" oninput="document.getElementById('val-c-q2').innerText = this.value">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-sm text-slate-300">Távolság (r): <span id="val-c-r">150</span></label>
+                        <input type="range" id="slider-c-r" min="50" max="300" value="150" class="w-full accent-purple-500" oninput="document.getElementById('val-c-r').innerText = this.value">
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 h-64 md:h-auto canvas-container">
+                <canvas id="canvas-coulomb"></canvas>
+                <div class="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded text-sm text-slate-300">Sárga vektorok: Elektrosztatikus erő</div>
+                <div class="absolute bottom-4 right-4 text-sm text-slate-400 italic">Az animáció ciklikusan vált a vonzás és taszítás között.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigációs panel -->
+    <div class="nav-bar" id="nav-bar" style="display: none;">
+        <button id="btn-prev" class="btn flex items-center gap-2" onclick="prevSlide()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            Előző
+        </button>
+        
+        <div class="text-slate-400 font-semibold tracking-widest">
+            <span id="slide-counter" class="text-white">1</span> / 5
+        </div>
+
+        <button id="btn-next" class="btn flex items-center gap-2" onclick="nextSlide()">
+            Következő
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+    </div>
+
+    <!-- JavaScript Logika és Animációk -->
+    <script>
+        // --- 1. DIA NAVIGÁCIÓ LOGIKA ---
+        const totalSlides = 5;
+        let currentSlide = 0;
+
+        function updateUI() {
+            // Diák láthatósága
+            for (let i = 0; i < totalSlides; i++) {
+                const slide = document.getElementById(`slide-${i}`);
+                if (i === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            }
+
+            // Navigációs sáv megjelenítése (címlapon rejtett)
+            const navBar = document.getElementById('nav-bar');
+            if (currentSlide === 0) {
+                navBar.style.display = 'none';
+            } else {
+                navBar.style.display = 'flex';
+            }
+
+            // Gombok állapota
+            document.getElementById('btn-prev').disabled = (currentSlide === 1);
+            document.getElementById('btn-next').disabled = (currentSlide === totalSlides - 1);
+            
+            // Számláló frissítése
+            document.getElementById('slide-counter').innerText = currentSlide + 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        // Billentyűzet támogatás
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+
+        // --- 2. CANVAS ANIMÁCIÓK RENDSZERE ---
+        
+        // Segédfüggvény vektor (nyíl) rajzolásához
+        function drawArrow(ctx, fromx, fromy, tox, toy, color, width=2) {
+            const headlen = 10; 
+            const dx = tox - fromx;
+            const dy = toy - fromy;
+            const angle = Math.atan2(dy, dx);
+            
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.stroke();
+        }
+
+        // Közös beállítások
+        const canvases = {
+            gravity: { el: document.getElementById('canvas-gravity'), ctx: null },
+            spring: { el: document.getElementById('canvas-spring'), ctx: null },
+            friction: { el: document.getElementById('canvas-friction'), ctx: null },
+            coulomb: { el: document.getElementById('canvas-coulomb'), ctx: null }
+        };
+
+        // Méretezés reszponzívan
+        function resizeCanvases() {
+            for (let key in canvases) {
+                const c = canvases[key].el;
+                // Eredeti DOM méret felvétele a belső felbontáshoz
+                const rect = c.parentElement.getBoundingClientRect();
+                c.width = rect.width;
+                c.height = rect.height;
+                canvases[key].ctx = c.getContext('2d');
+            }
+        }
+        window.addEventListener('resize', resizeCanvases);
+        resizeCanvases(); // Inicializálás
+
+        // --- Animációs Állapotok ---
+
+        // Gravitáció
+        let gravAngle = 0;
+        
+        // Rugó (A kitérést most a slider adja)
+        // Súrlódás
+        let fricBlockX = 50;
+
+        // Coulomb (A távolságot most a slider adja)
+
+        // --- Animációs Rajzoló Függvények ---
+
+        function drawGravity(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, width, height);
+
+            const cx = width / 2;
+            const cy = height / 2;
+            
+            // Értékek olvasása a csúszkákról
+            const m1 = parseFloat(document.getElementById('slider-g-m1').value);
+            const m2 = parseFloat(document.getElementById('slider-g-m2').value);
+            const rOrbit = parseFloat(document.getElementById('slider-g-r').value);
+
+            // Pálya rajzolása
+            ctx.beginPath();
+            ctx.arc(cx, cy, rOrbit, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Központi test (Pl. Föld) mérete m1-től függ
+            const r1 = 15 + (m1 * 0.5); 
+            ctx.beginPath();
+            ctx.arc(cx, cy, r1, 0, Math.PI * 2);
+            ctx.fillStyle = '#3b82f6';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#3b82f6';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Keringő test (Pl. Hold) mérete m2-től függ
+            const mx = cx + rOrbit * Math.cos(gravAngle);
+            const my = cy + rOrbit * Math.sin(gravAngle);
+            const r2 = 5 + (m2 * 0.5);
+            
+            ctx.beginPath();
+            ctx.arc(mx, my, r2, 0, Math.PI * 2);
+            ctx.fillStyle = '#94a3b8';
+            ctx.fill();
+
+            // Erővektor = G * m1 * m2 / r^2
+            let forceMag = (m1 * m2) / (rOrbit * rOrbit) * 150000;
+            forceMag = Math.max(5, Math.min(forceMag, 120)); // Vizuális korlát, hogy beférjen
+
+            const dirX = cx - mx;
+            const dirY = cy - my;
+            const dist = Math.sqrt(dirX*dirX + dirY*dirY);
+            
+            // Vektorok
+            drawArrow(ctx, mx, my, mx + (dirX/dist)*forceMag, my + (dirY/dist)*forceMag, '#22c55e', 3);
+            drawArrow(ctx, cx, cy, cx - (dirX/dist)*forceMag, cy - (dirY/dist)*forceMag, '#22c55e', 3);
+
+            // Mozgás (sebesség a távolságtól függ, Kepler tv. vizualizációja)
+            gravAngle -= 0.02 * (100 / rOrbit); 
+        }
+
+        function drawSpring(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, width, height);
+
+            const cx = width / 2;
+            const topY = 20;
+            const restY = height / 2;
+            
+            // Értékek olvasása
+            const D = parseFloat(document.getElementById('slider-s-D').value);
+            const dx = parseFloat(document.getElementById('slider-s-dx').value);
+            
+            const massY = restY + dx; // A csúszka közvetlenül az elmozdulást állítja
+
+            // Felső tartó rúd
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(cx - 50, 0, 100, topY);
+
+            // Rugó rajzolása
+            ctx.beginPath();
+            ctx.moveTo(cx, topY);
+            const coils = 15;
+            const coilHeight = (massY - topY) / coils;
+            for (let i = 1; i <= coils; i++) {
+                const xOffset = (i % 2 === 0) ? 20 : -20;
+                if (i === coils) {
+                    ctx.lineTo(cx, topY + i * coilHeight);
+                } else {
+                    ctx.lineTo(cx + xOffset, topY + i * coilHeight);
+                }
+            }
+            // Vizuális vastagság a rugóállandótól függ
+            ctx.lineWidth = 1 + (D / 15);
+            ctx.strokeStyle = '#94a3b8';
+            ctx.stroke();
+
+            // Súly
+            const boxSize = 50;
+            ctx.fillStyle = '#f59e0b';
+            ctx.fillRect(cx - boxSize/2, massY, boxSize, boxSize);
+            
+            // Erővektor (F = -D * dx)
+            const forceMag = -D * dx * 0.03; // Skálázás
+            if (Math.abs(forceMag) > 2) {
+                const startY = massY + boxSize/2;
+                // Az erő iránya ellentétes a kitéréssel (a vektor mutatja)
+                drawArrow(ctx, cx + 40, startY, cx + 40, startY + forceMag, '#ef4444', 4);
+            }
+
+            // Egyensúlyi helyzet
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(cx - 80, restY + boxSize/2);
+            ctx.lineTo(cx + 80, restY + boxSize/2);
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawFriction(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, width, height);
+
+            const floorY = height * 0.7;
+            const boxSize = 60;
+
+            // Talaj
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(0, floorY, width, height - floorY);
+            
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for(let i=0; i<width; i+=20) {
+                ctx.moveTo(i, floorY);
+                ctx.lineTo(i-10, floorY+10);
+            }
+            ctx.stroke();
+
+            // Értékek
+            const mu = parseFloat(document.getElementById('slider-f-mu').value);
+            const Fny = parseFloat(document.getElementById('slider-f-Fny').value);
+            const Fh = parseFloat(document.getElementById('slider-f-Fh').value);
+            
+            const Fs_max = mu * Fny; // Maximális tapadási / csúszási súrlódás
+            let Fs = 0;
+            
+            if (Fh <= Fs_max) {
+                Fs = Fh; // Nyugalomban van, F_s kiegyenlíti a húzóerőt
+            } else {
+                Fs = Fs_max; // Mozog, a súrlódás a maximális érték
+                fricBlockX += (Fh - Fs) * 0.05; // Gyorsul
+            }
+
+            if (fricBlockX > width) fricBlockX = -boxSize; // Képernyő wrap
+
+            // Doboz
+            ctx.fillStyle = '#8b5cf6';
+            ctx.fillRect(fricBlockX, floorY - boxSize, boxSize, boxSize);
+
+            // Húzóerő vektor (Kék)
+            if (Fh > 0) {
+                drawArrow(ctx, fricBlockX + boxSize, floorY - boxSize/2, fricBlockX + boxSize + Fh, floorY - boxSize/2, '#3b82f6', 4);
+            }
+
+            // Súrlódási erő vektor (Piros)
+            if (Fs > 0) {
+                drawArrow(ctx, fricBlockX, floorY - boxSize/2, fricBlockX - Fs, floorY - boxSize/2, '#ef4444', 4);
+            }
+        }
+
+        function drawCoulomb(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, width, height);
+
+            const cx = width / 2;
+            const cy = height / 2;
+            const radius = 25;
+
+            // Értékek
+            const q1 = parseFloat(document.getElementById('slider-c-q1').value);
+            const q2 = parseFloat(document.getElementById('slider-c-q2').value);
+            const r = parseFloat(document.getElementById('slider-c-r').value);
+
+            const p1x = cx - r / 2;
+            const p2x = cx + r / 2;
+
+            // 1. Töltés
+            ctx.beginPath();
+            ctx.arc(p1x, cy, radius, 0, Math.PI * 2);
+            ctx.fillStyle = q1 > 0 ? '#ef4444' : (q1 < 0 ? '#3b82f6' : '#64748b'); // Piros (+), Kék (-), Szürke (0)
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = ctx.fillStyle;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = 'white';
+            ctx.font = '24px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(q1 > 0 ? '+' : (q1 < 0 ? '-' : '0'), p1x, cy);
+
+            // 2. Töltés
+            ctx.beginPath();
+            ctx.arc(p2x, cy, radius, 0, Math.PI * 2);
+            ctx.fillStyle = q2 > 0 ? '#ef4444' : (q2 < 0 ? '#3b82f6' : '#64748b');
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = ctx.fillStyle;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = 'white';
+            ctx.fillText(q2 > 0 ? '+' : (q2 < 0 ? '-' : '0'), p2x, cy);
+
+            // Erővektorok (F = k * q1 * q2 / r^2)
+            if (q1 !== 0 && q2 !== 0) {
+                const isRepulsive = (q1 * q2) > 0;
+                let forceMag = (Math.abs(q1 * q2) / (r * r)) * 100000;
+                forceMag = Math.max(5, Math.min(forceMag, 150)); // Limit
+
+                if (isRepulsive) {
+                    // Kifelé mutat (taszítás)
+                    drawArrow(ctx, p1x - radius - 5, cy, p1x - radius - 5 - forceMag, cy, '#eab308', 3);
+                    drawArrow(ctx, p2x + radius + 5, cy, p2x + radius + 5 + forceMag, cy, '#eab308', 3);
+                } else {
+                    // Befelé mutat (vonzás)
+                    drawArrow(ctx, p1x + radius + 5, cy, p1x + radius + 5 + forceMag, cy, '#eab308', 3);
+                    drawArrow(ctx, p2x - radius - 5, cy, p2x - radius - 5 - forceMag, cy, '#eab308', 3);
+                }
+            }
+        }
+
+        // --- Fő Animációs Ciklus ---
+        function animate() {
+            // Csak azt a canvast frissítjük, amelyik a látható dián van
+            if (currentSlide === 1 && canvases.gravity.ctx) {
+                drawGravity(canvases.gravity.ctx, canvases.gravity.el.width, canvases.gravity.el.height);
+            } else if (currentSlide === 2 && canvases.spring.ctx) {
+                drawSpring(canvases.spring.ctx, canvases.spring.el.width, canvases.spring.el.height);
+            } else if (currentSlide === 3 && canvases.friction.ctx) {
+                drawFriction(canvases.friction.ctx, canvases.friction.el.width, canvases.friction.el.height);
+            } else if (currentSlide === 4 && canvases.coulomb.ctx) {
+                drawCoulomb(canvases.coulomb.ctx, canvases.coulomb.el.width, canvases.coulomb.el.height);
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        // Indítás ha a DOM betöltött
+        window.onload = () => {
+            updateUI();
+            requestAnimationFrame(animate);
+        };
+
+    </script>
+</body>
+</html>
